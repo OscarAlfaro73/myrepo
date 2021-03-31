@@ -1,0 +1,54 @@
+---
+title: "test"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Testing my first code in R markdown
+
+```{r}
+  c(1,2,3,4) -> a
+
+  str(b)
+  b = c(1,2,4^2,3:16)
+  tmp2 <- "Oscar"
+  
+  tmp <- b[b>=10]
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+Summary of the second R session
+
+- select is useful for subsetting columns
+- filter is for rows
+- mutate is for creating or overrun a column
+- you need to library the package to make it work
+
+```{r}
+library(dplyr)
+```
