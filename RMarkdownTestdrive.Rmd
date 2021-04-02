@@ -8,6 +8,12 @@ output: github_document
 ## Checking versions first
 packageVersion("rmarkdown")
 R.version.string
-RStudio.Version()$version
+#RStudio.Version()$version
+```
+```{r}
+## adding a bit of code
+library(dbplyr)
+ds <- iris
+head(iris)
 ```
 
