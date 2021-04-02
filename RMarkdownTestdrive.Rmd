@@ -9,6 +9,10 @@ output: github_document
 packageVersion("rmarkdown")
 R.version.string
 #RStudio.Version()$version
+
+## some additional basic checks
+getwd()
+list.files()
 ```
 ```{r}
 ## adding a bit of code
