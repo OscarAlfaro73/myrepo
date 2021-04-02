@@ -9,10 +9,14 @@ output: github_document
 packageVersion("rmarkdown")
 R.version.string
 RStudio.Version()$version
+<<<<<<< HEAD
 ```
 
 
 ```{r}
+=======
+
+>>>>>>> 18381e85691b07b8f42b864686f3ed5cbc5a21d2
 ## insert your brilliant WORKING code here
 library(dbplyr)
 ds <- iris
