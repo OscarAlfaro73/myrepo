@@ -5,6 +5,11 @@ output: github_document
 ---
 
 ```{r}
+## Basic checks first
+packageVersion("rmarkdown")
+R.version.string
+RStudio.Version()$version
+
 ## insert your brilliant WORKING code here
 library(dbplyr)
 ds <- iris
