@@ -1,0 +1,13 @@
+---
+title: "R Markdown Test drive"
+output: github_document 
+
+---
+
+```{r}
+## Checking versions first
+packageVersion("rmarkdown")
+R.version.string
+RStudio.Version()$version
+```
+
