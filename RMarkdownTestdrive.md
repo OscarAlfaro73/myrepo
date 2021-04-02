@@ -16,7 +16,21 @@ R.version.string
 
 ``` r
 #RStudio.Version()$version
+
+## some additional basic checks
+## warning from the wiki - Don’t try to change working directory within an R Markdown document. Just don’t. See knitr FAQ #5. That is all. -
+getwd()
 ```
+
+    ## [1] "C:/LocalFiles/RProjects/myrepo"
+
+``` r
+list.files()
+```
+
+    ## [1] "JC_data_plot.html"      "JC_data_plot.Rmd"       "LearningR.R"           
+    ## [4] "myrepo.Rproj"           "README.md"              "RMarkdownTestdrive.md" 
+    ## [7] "RMarkdownTestdrive.Rmd" "Test.Rproj"             "Test_RMarkdown.Rmd"
 
 ``` r
 ## adding a bit of code
