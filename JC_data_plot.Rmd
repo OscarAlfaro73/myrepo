@@ -1,0 +1,107 @@
+---
+title: "JC_Data_plot"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+#this prints all code chunks
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Economic cost effectiveness
+
+Some text
+
+```{r}
+suppressWarnings(suppressMessages(library("dplyr", quietly = T)))
+suppressWarnings(suppressMessages(library("readxl", quietly = T)))
+suppressWarnings(suppressMessages(library("tidyverse", quietly = T)))
+suppressWarnings(suppressMessages(library("ggplot2", quietly = T)))
+## to tidy up our table
+suppressWarnings(suppressMessages(library("tidyr", quietly = T)))
+## combining plots
+suppressWarnings(suppressMessages(library("patchwork", quietly = T)))
+##suppressMessages(library(dplyr))
+
+# Read Excel file
+ds <- read_xlsx(path = "C:/LocalFiles/RProjects/Test/data/JCH_data.xlsx", sheet="Sheet2")
+names(ds)
+
+# check if there are na values somewhere
+colSums(is.na(ds))
+
+```
+
+Another chunk
+```{r}
+#Changing the names of columns
+names(ds)[1] <- "ANSP_NAME"
+names(ds)[2] <- "FIN_CEF"
+names(ds)[3] <- "UC_ER_DLY"
+names(ds)[4] <- "UC_APT_DLY"
+names(ds)[5] <- "CEF"
+names(ds)[6] <- "CEF1_4"
+names(ds)[7] <- "CEF3_4"
+
+#Select a range of rows
+#ds[1:38,] -> ds 
+ds <- ds %>% 
+  filter(!is.na(ANSP_NAME), ANSP_NAME != "Total European system")
+
+#Coerce into a facto... it wasn´t necessary at the end
+ds %>% mutate(ANSP2 = as.factor(ANSP_NAME))
+
+#Tidy data
+
+tmp <- ds %>% select (1:4) %>% 
+  pivot_longer(cols = c("FIN_CEF","UC_ER_DLY","UC_APT_DLY"), names_to = "TYPE", values_to ="value") 
+
+```
+
+Working now with tidy data
+```{r}
+# We plot now the tidy data
+vis1 <- tmp %>%
+  ggplot()+
+  aes(x=ANSP_NAME, y = value, fill = TYPE)+
+  geom_col()+ 
+  ##geom_text(size=3, aes(label = round(Total, digits = 2)), angle = 90, vjust = +0.5, hjust = +1)+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=8, angle=90, hjust=1, vjust=0.2))+
+  theme(legend.position="top", legend.title = element_blank())+
+  labs(x=NULL, y="ATCO-hours per composite flight-hour")
+##vis1
+##vis1 + vis1
+##vis1 / vis1
+```
+Creating the inset graph
+
+```{r}
+largest5 <- tmp %>% filter(ANSP_NAME %in% c("DFS", "DSNA", "ENAV", "ENAIRE", "NATS (Continental)"))
+vis2 <- largest5 %>%
+  ggplot()+
+  aes(x=ANSP_NAME, y = value, fill = TYPE)+
+  geom_col()+
+  theme_minimal()+
+  theme(legend.position="none")+
+  labs(x=NULL, y=NULL)
+
+lb <- 0.6
+vis1 + inset_element(vis2, left = lb, bottom = lb, right = 1, top = 1)
+```
+
+
+Trying to show the blue bars
+
+```{r}
+# plot graph
+ds %>%
+  ggplot()+
+  aes (x=ANSP_NAME, y=FIN_CEF)+
+  geom_col(fill="#2e86c1")+
+  geom_line(aes(x=ANSP_NAME, y=CEF1_4, group="OSCAR"))+
+  geom_line(aes(x=ANSP_NAME, y=CEF3_4, group="JC")) +
+  theme_minimal()+
+  labs(title="Economic Cost-Effectiveness", subtitle="done by cool guys", caption="this is my caption", x=NULL, y="Financial Cost-Efficiency (€)")
+```
+
