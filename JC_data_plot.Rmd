@@ -61,9 +61,10 @@ tmp <- ds %>% select (1:4) %>%
 Working now with tidy data
 ```{r}
 # We plot now the tidy data
+# note the refactoring of the TYPE to change the ordering in the stacked bar
 vis1 <- tmp %>%
   ggplot()+
-  aes(x=reorder(ANSP_NAME, -value), y = value, fill = TYPE)+
+  aes(x=reorder(ANSP_NAME, -value), y = value, fill = factor(TYPE,levels=c("UC_ER_DLY", "UC_APT_DLY", "FIN_CEF")))+
   geom_col()+ 
   ##geom_text(size=3, aes(label = round(Total, digits = 2)), angle = 90, vjust = +0.5, hjust = +1)+
   theme_minimal()+
