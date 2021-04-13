@@ -62,10 +62,12 @@ Working now with tidy data
 ```{r}
 # We plot now the tidy data
 # note the refactoring of the TYPE to change the ordering in the stacked bar
+# ddddddddd dddddd ddddd dd 
 vis1 <- tmp %>%
   ggplot()+
   aes(x=reorder(ANSP_NAME, -value), y = value, fill = factor(TYPE,levels=c("UC_ER_DLY", "UC_APT_DLY", "FIN_CEF")))+
   geom_col()+ 
+  scale_fill_manual(values = c("#eee600", "#ff0000", "#9999ff"))+
   ##geom_text(size=3, aes(label = round(Total, digits = 2)), angle = 90, vjust = +0.5, hjust = +1)+
   theme_minimal()+
   theme(axis.text.x = element_text(size=8, angle=90, hjust=1, vjust=0.2))+
@@ -81,8 +83,9 @@ Creating the inset graph
 largest5 <- tmp %>% filter(ANSP_NAME %in% c("DFS", "DSNA", "ENAV", "ENAIRE", "NATS (Continental)"))
 vis2 <- largest5 %>%
   ggplot()+
-  aes(x=ANSP_NAME, y = value, fill = TYPE)+
+  aes(x=ANSP_NAME, y = value, fill = factor(TYPE,levels=c("UC_ER_DLY", "UC_APT_DLY", "FIN_CEF")))+
   geom_col()+
+  scale_fill_manual(values = c("#eee600", "#ff0000", "#9999ff"))+
   theme_minimal()+
   theme(legend.position="none")+
   labs(x=NULL, y=NULL)
