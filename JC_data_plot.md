@@ -101,17 +101,25 @@ Working now with tidy data
 # We plot now the tidy data
 vis1 <- tmp %>%
   ggplot()+
+
 # note the refactoring of the TYPE to change the ordering in the stacked bar
   aes(x=reorder(ANSP_NAME, -value), y = value, fill = factor(TYPE,levels=c("UC_ER_DLY", "UC_APT_DLY", "FIN_CEF")))+
-  geom_col()+ 
+  geom_col()+
+
+# Trying to add labels to the bars
+  geom_text(size=3, aes(label = round(value, digits = 0)), angle = 90, position = position_stack(vjust = 1.2))+
+
 # This line changes the colour of the bars  and the labels of the legend
   scale_fill_manual(values = c("#eee600", "#ff0000", "#9999ff"), labels = c("Unit cost of en-route ATFM delays", "Unit cost of aiport ATFM delays", "Financial G2G cost-effectiveness"))+
    ##geom_text(size=3, aes(label = round(Total, digits = 2)), angle = 90, vjust = +0.5, hjust = +1)+
+  
   theme_minimal()+
   theme(axis.text.x = element_text(size=8, angle=90, hjust=1, vjust=0.2))+
-# Customize legend
+
+  # Customize legend
   theme(legend.position="top", legend.title = element_blank(), legend.key.size = unit(0.3,"cm"))+
-  labs(x=NULL, y="ATCO-hours per composite flight-hour")
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  labs(x=NULL, y="€ per composite flight-hour")
 ##vis1
 ##vis1 + vis1
 ##vis1 / vis1
@@ -128,7 +136,7 @@ vis2 <- largest5 %>%
   scale_fill_manual(values = c("#eee600", "#ff0000", "#9999ff"))+
   theme_minimal()+
   theme(axis.text.x = element_text(size=7, angle=90, hjust=1, vjust=0.2))+
-  theme(legend.position="none")+
+  theme(legend.position="none", panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   labs(x=NULL, y=NULL)
 
 vis1 + inset_element(vis2, left = 0.6, bottom = 0.3, right = 1, top = 1)
