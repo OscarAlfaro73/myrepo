@@ -56,17 +56,19 @@ ds %>% mutate(ANSP2 = as.factor(ANSP_NAME))
 tmp <- ds %>% select (1:4) %>% 
   pivot_longer(cols = c("FIN_CEF","UC_ER_DLY","UC_APT_DLY"), names_to = "TYPE", values_to ="value") 
 
+# Change "Continental"  by "Cont" 
+tmp <- tmp %>% mutate(across(ANSP_NAME,~str_replace_all(ANSP_NAME,"Continental","Cont.")))
 ```
 
 Working now with tidy data
 ```{r}
 # We plot now the tidy data
-# note the refactoring of the TYPE to change the ordering in the stacked bar
-# ddddddddd dddddd ddddd dd 
 vis1 <- tmp %>%
   ggplot()+
+# note the refactoring of the TYPE to change the ordering in the stacked bar
   aes(x=reorder(ANSP_NAME, -value), y = value, fill = factor(TYPE,levels=c("UC_ER_DLY", "UC_APT_DLY", "FIN_CEF")))+
   geom_col()+ 
+# This line changes the colour of the bars  
   scale_fill_manual(values = c("#eee600", "#ff0000", "#9999ff"))+
   ##geom_text(size=3, aes(label = round(Total, digits = 2)), angle = 90, vjust = +0.5, hjust = +1)+
   theme_minimal()+
@@ -80,18 +82,18 @@ vis1 <- tmp %>%
 Creating the inset graph
 
 ```{r}
-largest5 <- tmp %>% filter(ANSP_NAME %in% c("DFS", "DSNA", "ENAV", "ENAIRE", "NATS (Continental)"))
+largest5 <- tmp %>% filter(ANSP_NAME %in% c("DFS", "DSNA", "ENAV", "ENAIRE", "NATS (Cont.)"))
 vis2 <- largest5 %>%
   ggplot()+
   aes(x=ANSP_NAME, y = value, fill = factor(TYPE,levels=c("UC_ER_DLY", "UC_APT_DLY", "FIN_CEF")))+
   geom_col()+
   scale_fill_manual(values = c("#eee600", "#ff0000", "#9999ff"))+
   theme_minimal()+
+  theme(axis.text.x = element_text(size=7, angle=90, hjust=1, vjust=0.2))+
   theme(legend.position="none")+
   labs(x=NULL, y=NULL)
 
-lb <- 0.6
-vis1 + inset_element(vis2, left = lb, bottom = lb, right = 1, top = 1)
+vis1 + inset_element(vis2, left = 0.6, bottom = 0.25, right = 1, top = 1)
 ```
 
 
