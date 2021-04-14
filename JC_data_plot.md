@@ -100,24 +100,30 @@ Working now with tidy data
 ``` r
 # We plot now the tidy data
 # But first we create a table with the labels for the graph... I tried first with an additional column but better with a separate table
-# tmp <- tmp %>% group_by(ANSP_NAME) %>% mutate(graph_label = sum(value))
-mylabels <- tmp %>% group_by(ANSP_NAME) %>% summarise(graph_label=round(sum(value), digits=0))
-  # turns out the sorting below is not needed
-# mylabels <- mylabels %>% arrange(-graph_label)
+  # tmp <- tmp %>% group_by(ANSP_NAME) %>% mutate(graph_label = sum(value))
+mylabels <- tmp %>% group_by(ANSP_NAME) %>% summarise(graph_label=sum(value))
+# turns out the sorting below is not needed
+  # mylabels <- mylabels %>% arrange(-graph_label)
+# I need the quartiles too for the lines
+mylabels <- mylabels %>% mutate(q25=unname(quantile(graph_label, probs=0.25)), q75=unname(quantile(graph_label, probs=0.75)))
 
 vis1 <- tmp %>%
   ggplot()+
-
-# resetting the y axis limit so the label is not out of range
-  coord_cartesian(ylim=c(0,max(mylabels$graph_label)+200))+
 
 # note the refactoring of the TYPE to change the ordering in the stacked bar
   aes(x=reorder(ANSP_NAME, -value), y = value, fill = factor(TYPE,levels=c("UC_ER_DLY", "UC_APT_DLY", "FIN_CEF")))+
   geom_col()+
   
 # Add labels to the bars
-  geom_text(data=mylabels, size=3, aes(x=ANSP_NAME, y=graph_label, label = graph_label, angle = 90, hjust=-0.2), inherit.aes = FALSE)+
+  geom_text(data=mylabels, size=3, aes(x=ANSP_NAME, y=graph_label, label = round(graph_label, digits=0), angle = 90, hjust=-0.2), inherit.aes = FALSE)+
 
+# resetting the y axis limit so the label is not out of range
+  coord_cartesian(ylim=c(0,max(mylabels$graph_label)+200))+
+  
+# adding the quartiles
+   geom_line(data=mylabels, aes(x=ANSP_NAME, y=q25, group="OSCAR"), linetype = "dashed", color="#333399", size=1, alpha = 0.5, inherit.aes = FALSE)+
+     geom_line(data=mylabels, aes(x=ANSP_NAME, y=q75, group="OSCAR"), linetype = "dashed", color="#333399", size=1, alpha = 0.5, inherit.aes = FALSE)+
+  
 # This line changes the colour of the bars  and the labels of the legend
   scale_fill_manual(values = c("#eee600", "#ff0000", "#9999ff"), labels = c("Unit cost of en-route ATFM delays", "Unit cost of aiport ATFM delays", "Financial G2G cost-effectiveness"))+
    ##geom_text(size=3, aes(label = round(Total, digits = 2)), angle = 90, vjust = +0.5, hjust = +1)+
@@ -154,7 +160,7 @@ vis1 + inset_element(vis2, left = 0.6, bottom = 0.3, right = 1, top = 1)
 
 ![](JC_data_plot_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
-Trying to show the blue bars
+This was the first attempt, kept here in case we need it
 
 ``` r
 # plot graph
