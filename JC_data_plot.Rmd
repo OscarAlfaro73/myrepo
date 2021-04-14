@@ -63,15 +63,24 @@ tmp <- tmp %>% mutate(across(ANSP_NAME,~str_replace_all(ANSP_NAME,"Continental",
 Working now with tidy data
 ```{r}
 # We plot now the tidy data
+# But first we create an additional column with the label for the graph
+tmp <- tmp %>% group_by(ANSP_NAME) %>% mutate(graph_label = sum(value))
+mylabels <- tmp %>% group_by(ANSP_NAME) %>% summarise(graph_label=round(sum(value), digits=0))
+  # turns out the sorting below is not needed
+# mylabels <- mylabels %>% arrange(-graph_label)
+
 vis1 <- tmp %>%
   ggplot()+
+
+# resetting the y axis limit so the label is not out of range
+  coord_cartesian(ylim=c(0,max(mylabels$graph_label)+200))+
 
 # note the refactoring of the TYPE to change the ordering in the stacked bar
   aes(x=reorder(ANSP_NAME, -value), y = value, fill = factor(TYPE,levels=c("UC_ER_DLY", "UC_APT_DLY", "FIN_CEF")))+
   geom_col()+
-
-# Trying to add labels to the bars
-  geom_text(size=3, aes(label = round(value, digits = 0)), angle = 90, position = position_stack(vjust = 1.2))+
+  
+# Add labels to the bars
+  geom_text(data=mylabels, size=3, aes(x=ANSP_NAME, y=graph_label, label = graph_label, angle = 90, hjust=-0.2), inherit.aes = FALSE)+
 
 # This line changes the colour of the bars  and the labels of the legend
   scale_fill_manual(values = c("#eee600", "#ff0000", "#9999ff"), labels = c("Unit cost of en-route ATFM delays", "Unit cost of aiport ATFM delays", "Financial G2G cost-effectiveness"))+
@@ -84,7 +93,8 @@ vis1 <- tmp %>%
   theme(legend.position="top", legend.title = element_blank(), legend.key.size = unit(0.3,"cm"))+
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   labs(x=NULL, y="€ per composite flight-hour")
-##vis1
+
+# vis1
 ##vis1 + vis1
 ##vis1 / vis1
 ```
