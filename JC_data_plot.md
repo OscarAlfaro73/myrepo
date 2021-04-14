@@ -99,8 +99,8 @@ Working now with tidy data
 
 ``` r
 # We plot now the tidy data
-# But first we create an additional column with the label for the graph
-tmp <- tmp %>% group_by(ANSP_NAME) %>% mutate(graph_label = sum(value))
+# But first we create a table with the labels for the graph... I tried first with an additional column but better with a separate table
+# tmp <- tmp %>% group_by(ANSP_NAME) %>% mutate(graph_label = sum(value))
 mylabels <- tmp %>% group_by(ANSP_NAME) %>% summarise(graph_label=round(sum(value), digits=0))
   # turns out the sorting below is not needed
 # mylabels <- mylabels %>% arrange(-graph_label)
